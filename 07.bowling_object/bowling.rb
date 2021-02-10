@@ -60,7 +60,7 @@ class Game
 
   def calc_score
     frames.each.with_index.sum do |f, num|
-      i == 9 ? f.score : f.score + add_bonus(f, left_shots(num))
+      num == 9 ? f.score : f.score + add_bonus(f, left_shots(num))
     end
   end
 
