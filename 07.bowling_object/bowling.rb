@@ -2,66 +2,86 @@
 # frozen_string_literal: true
 
 class Shot
-  def initialize(score)
-    @score = score
+  attr_reader :mark
+
+  def initialize(mark)
+    @mark = mark
   end
 
-  def to_shots
-    scores = @score.chars
-    shots = []
-    count = 0 # X以外のスコアを数える
-    scores.each do |s|
-      if s == 'X' && count.even?
-        shots << 10
-        shots << 0
-        count = 0
-      elsif s == 'X' && count.odd?
-        shots << 10
-        count = 0
-      else
-        shots << s.to_i
-        count += 1
-      end
-    end
-    shots
+  def to_score
+    mark == 'X' ? 10 : mark.to_i
   end
 end
 
 class Frame
-  def initialize(score)
-    @shots = Shot.new(score).to_shots
+  attr_reader :marks, :frame
+
+  def initialize(*marks)
+    @frame = marks.map { |m| Shot.new(m).to_score }
   end
 
-  def to_frames
-    frames = []
-    @shots.each_slice(2) do |s|
-      frames << s
-    end
-    frames
+  def strike?
+    frame[0] == 10
+  end
+
+  def spare?
+    frame.sum == 10
+  end
+
+  def score
+    frame.sum
   end
 end
 
 class Game
-  def initialize(score)
-    @frames = Frame.new(score).to_frames
+  attr_reader :marks, :frames
+
+  def initialize(marks)
+    @marks = marks.chars
+    @frames = to_frames
   end
 
-  def point
-    point = 0
-    @frames.each.with_index do |frame, i|
-      if frame[0] == 10 && i < 9 # strike
-        plus = @frames[i + 1][0] == 10 ? 10 + @frames[i + 2][0] : @frames[i + 1].sum
-        point += 10 + plus
-      elsif frame.sum == 10 && i < 9 # spare
-        point += 10 + @frames[i + 1][0]
-      else
-        point += frame.sum
+  def to_frames
+    frames = []
+    rolls = []
+    marks.each.with_index do |m, i|
+      rolls << m
+      if frames.size < 9
+        if rolls.size >= 2 || m == 'X'
+          frames << Frame.new(*rolls)
+          rolls.clear
+        end
+      elsif i == marks.size - 1
+        frames << Frame.new(*rolls)
       end
     end
-    point
+    frames
+  end
+
+  def calc_score
+    frames.each.with_index.sum do |f, num|
+      i == 9 ? f.score : f.score + add_bonus(f, left_shots(num))
+    end
+  end
+
+  private
+
+  def left_shots(num)
+    next_frame = frames[num + 1] ? frames[num + 1].frame : []
+    after_next_frame = frames[num + 2] ? frames[num + 2].frame : []
+    next_frame + after_next_frame
+  end
+
+  def add_bonus(frame, left_shots)
+    if frame.strike?
+      left_shots.first(2).sum
+    elsif frame.spare?
+      left_shots.first
+    else
+      0
+    end
   end
 end
 
-score = ARGV[0]
-game = Game.new(score)
-puts game.point
+game = Game.new(ARGV[0])
+puts game.calc_score
