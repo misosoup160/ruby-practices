@@ -1,0 +1,59 @@
+# frozen_string_literal: true
+
+require 'minitest/autorun'
+require './lib/ls'
+
+class LsCommandTest < Minitest::Test
+  TARGET_PATHNAME = Pathname('/Users/mssp/my_books_app/books_app')
+
+  def test_ls_files
+    expected = <<~TEXT.chomp
+      Gemfile           config            postcss.config.js
+      Gemfile.lock      config.ru         public
+      README.md         db                storage
+      Rakefile          lib               test
+      app               log               tmp
+      babel.config.js   node_modules      vendor
+      bin               package.json      yarn.lock
+    TEXT
+    assert_equal expected, LsFiles.new(TARGET_PATHNAME).files_info
+  end
+
+  def test_ls_files_dot_match
+    expected = <<~TEXT.chomp
+      .                 Rakefile          node_modules
+      ..                app               package.json
+      .browserslistrc   babel.config.js   postcss.config.js
+      .git              bin               public
+      .gitignore        config            storage
+      .ruby-version     config.ru         test
+      Gemfile           db                tmp
+      Gemfile.lock      lib               vendor
+      README.md         log               yarn.lock
+    TEXT
+    assert_equal expected, LsFiles.new(TARGET_PATHNAME, dot_match: true).files_info
+  end
+
+  def test_ls_files_reverse
+    expected = <<~TEXT.chomp
+      yarn.lock         package.json      bin
+      vendor            node_modules      babel.config.js
+      tmp               log               app
+      test              lib               Rakefile
+      storage           db                README.md
+      public            config.ru         Gemfile.lock
+      postcss.config.js config            Gemfile
+    TEXT
+    assert_equal expected, LsFiles.new(TARGET_PATHNAME, reverse: true).files_info
+  end
+
+  def test_ls_files_long_format
+    expected = `ls -l #{TARGET_PATHNAME}`.chomp
+    assert_equal expected, LsFiles.new(TARGET_PATHNAME, long_format: true).files_info
+  end
+
+  def test_ls_files_all_options
+    expected = `ls -lra #{TARGET_PATHNAME}`.chomp
+    assert_equal expected, LsFiles.new(TARGET_PATHNAME, long_format: true, reverse: true, dot_match: true).files_info
+  end
+end

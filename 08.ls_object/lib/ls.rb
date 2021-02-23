@@ -3,7 +3,7 @@
 
 require 'optparse'
 require 'pathname'
-require './ls_files.rb'
+require './lib/ls_files'
 
 opt = OptionParser.new
 
@@ -17,4 +17,3 @@ path = ARGV[0] || '.'
 pathname = Pathname(path)
 
 puts LsFiles.new(pathname, **params).files_info
-

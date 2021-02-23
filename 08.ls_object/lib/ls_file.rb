@@ -23,7 +23,7 @@ class LsFile
     @file_name = File.basename(file_path)
   end
 
-  def blocks
+  def file_blocks
     file_stat.blocks
   end
 
@@ -71,7 +71,7 @@ class LsFile
   end
 
   def format_mode
-    digits = file_stat.mode.to_s(8)[-3..-1]
+    digits = file_stat.mode.to_s(8)[-3..]
     digits.gsub(/./, MODE_TABLE)
   end
 end

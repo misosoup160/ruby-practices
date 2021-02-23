@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'pathname'
-require './ls_file.rb'
+require './lib/ls_file'
 
 class LsFiles
   attr_reader :pathname, :long_format, :reverse, :dot_match, :file_names, :files
@@ -10,7 +10,7 @@ class LsFiles
     @pathname = pathname
     @long_format = long_format
     @reverse = reverse
-    @dot_match = dot_match 
+    @dot_match = dot_match
   end
 
   def files_info
@@ -37,15 +37,15 @@ class LsLongFormat
   end
 
   def info
-    total = files.sum(&:blocks)
-    body = long_format_body   
+    total = files.sum(&:file_blocks)
+    body = long_format_body
     "total #{total}\n#{body}"
   end
 
   private
-  
+
   def long_format_body
-    max_sizes = [:link, :owner, :group, :size].map do |key|
+    max_sizes = %i[link owner group size].map do |key|
       find_max_size(key)
     end
     files.map do |file|
@@ -70,12 +70,12 @@ class LsShortFormat
     max_filename_count = file_names.map(&:size).max
     row_count = (file_names.count.to_f / 3).ceil
     nested_files = file_names.each_slice(row_count).to_a
-    transposed_failes = nested_files[0].zip(*nested_files[1..-1])
+    transposed_failes = nested_files[0].zip(*nested_files[1..])
     format_table(transposed_failes, max_filename_count)
   end
 
   private
-  
+
   def format_table(transposed_failes, max_filename_count)
     transposed_failes.map do |files|
       shot_format_row(files, max_filename_count)
@@ -86,7 +86,6 @@ class LsShortFormat
     files.map do |file|
       file ||= ''
       file.ljust(max_filename_count + 1)
-    end.join
+    end.join.rstrip
   end
 end
-
