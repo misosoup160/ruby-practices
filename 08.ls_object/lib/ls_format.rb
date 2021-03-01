@@ -7,7 +7,7 @@ class Format
     @files = files
     @long_format = @files.long_format
   end
-  
+
   def format_data
     @long_format ? build_long_format : build_short_format
   end

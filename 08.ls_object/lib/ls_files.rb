@@ -18,7 +18,7 @@ class LsFiles
     file_paths.map { |file_path| LsFile.new(file_path) }
   end
 
-  def file_names 
+  def file_names
     files_info.map(&:file_name)
   end
 
@@ -35,9 +35,9 @@ class LsFiles
   def total_fileblocks
     files_info.sum(&:file_blocks)
   end
-  
+
   private
-  
+
   def collect_file_paths
     pattern = @pathname.join('*')
     params = @dot_match ? [pattern, File::FNM_DOTMATCH] : [pattern]
@@ -49,4 +49,3 @@ class LsFiles
     files_info.map { |file| file.build_data[key].size }.max
   end
 end
-
