@@ -15,12 +15,16 @@ MODE_TABLE = {
 }.freeze
 
 class LsFile
-  attr_reader :file_path, :file_name, :file_stat
-
   def initialize(file_path)
     @file_path = file_path
-    @file_stat = File::Stat.new(file_path)
-    @file_name = File.basename(file_path)
+  end
+
+  def file_stat
+    File::Stat.new(@file_path)
+  end
+
+  def file_name
+    File.basename(@file_path)
   end
 
   def file_blocks

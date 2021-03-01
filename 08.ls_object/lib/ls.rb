@@ -3,7 +3,8 @@
 
 require 'optparse'
 require 'pathname'
-require './lib/ls_files'
+require_relative 'ls_files'
+require_relative 'ls_format'
 
 opt = OptionParser.new
 
@@ -15,5 +16,6 @@ opt.on('-a') { |v| params[:dot_match] = v }
 opt.parse!(ARGV)
 path = ARGV[0] || '.'
 pathname = Pathname(path)
-
-puts LsFiles.new(pathname, **params).files_info
+  
+files = LsFiles.new(pathname, **params)
+puts Format.new(files).format_data
