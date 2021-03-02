@@ -22,8 +22,20 @@ class Format
 
   def long_format_body
     @files.files_info.map do |file|
-      file.long_format_row(file.build_data, *@files.max_sizes)
+      long_format_row(file.build_data, *@files.max_sizes)
     end.join("\n")
+  end
+
+  def long_format_row(data, max_link, max_owner, max_group, max_size)
+    [
+      data[:type_and_mode],
+      "  #{data[:link].rjust(max_link)}",
+      " #{data[:owner].rjust(max_owner)}",
+      "  #{data[:group].rjust(max_group)}",
+      "  #{data[:size].rjust(max_size)}",
+      " #{data[:time]}",
+      " #{data[:name]}"
+    ].join
   end
 
   def build_short_format
