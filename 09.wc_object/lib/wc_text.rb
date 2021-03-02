@@ -19,7 +19,7 @@ class WcText
   end
 
   private
-  
+
   def file_text
     File.read(@pathname) unless @pathname.empty?
   end
