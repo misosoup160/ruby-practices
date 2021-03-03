@@ -3,46 +3,55 @@
 require_relative 'ls_files'
 
 class Format
-  def initialize(files)
-    @files = files
-    @long_format = @files.long_format
+  def initialize(file_list)
+    @file_list = file_list
+    @long_format = @file_list.long_format
   end
 
-  def format_data
+  def run
     @long_format ? build_long_format : build_short_format
   end
 
   private
 
   def build_long_format
-    total = @files.total_fileblocks
+    total = @file_list.total_fileblocks
     body = long_format_body
     "total #{total}\n#{body}"
   end
 
   def long_format_body
-    @files.files_info.map do |file|
-      long_format_row(file.build_data, *@files.max_sizes)
+    @file_list.ls_files.map do |file|
+      long_format_row(file, *max_sizes)
     end.join("\n")
   end
 
-  def long_format_row(data, max_link, max_owner, max_group, max_size)
+  def long_format_row(file, max_link, max_owner, max_group, max_size)
     [
-      data[:type_and_mode],
-      "  #{data[:link].rjust(max_link)}",
-      " #{data[:owner].rjust(max_owner)}",
-      "  #{data[:group].rjust(max_group)}",
-      "  #{data[:size].rjust(max_size)}",
-      " #{data[:time]}",
-      " #{data[:name]}"
+      "#{file.type}#{file.mode}",
+      "  #{file.nlink.rjust(max_link)}",
+      " #{file.owner.rjust(max_owner)}",
+      "  #{file.group.rjust(max_group)}",
+      "  #{file.bitesize.rjust(max_size)}",
+      " #{file.mtime}",
+      " #{file.name}"
     ].join
   end
 
+  def max_sizes
+    [
+      @file_list.ls_files.map { |file| file.nlink.size }.max,
+      @file_list.ls_files.map { |file| file.owner.size }.max,
+      @file_list.ls_files.map { |file| file.group.size }.max,
+      @file_list.ls_files.map { |file| file.bitesize.size }.max
+    ]
+  end
+
   def build_short_format
-    row_count = (@files.file_names.count.to_f / 3).ceil
-    nested_files = @files.file_names.each_slice(row_count).to_a
+    row_count = (@file_list.file_names.count.to_f / 3).ceil
+    nested_files = @file_list.file_names.each_slice(row_count).to_a
     transposed_files = nested_files[0].zip(*nested_files[1..])
-    short_format_table(transposed_files, @files.max_filename_count)
+    short_format_table(transposed_files, @file_list.max_filename_count)
   end
 
   def short_format_table(transposed_files, max_filename_count)

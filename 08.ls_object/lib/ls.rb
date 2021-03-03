@@ -17,5 +17,5 @@ opt.parse!(ARGV)
 path = ARGV[0] || '.'
 pathname = Pathname(path)
 
-files = LsFiles.new(pathname, **params)
-puts Format.new(files).format_data
+ls_file_list = LsFileList.new(pathname, **params)
+puts Format.new(ls_file_list).run
