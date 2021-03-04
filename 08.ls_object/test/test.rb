@@ -16,8 +16,8 @@ class LsCommandTest < Minitest::Test
       babel.config.js   node_modules      vendor
       bin               package.json      yarn.lock
     TEXT
-    files = LsFiles.new(TARGET_PATHNAME)
-    assert_equal expected, Format.new(files).format_data
+    ls_file_list = LsFileList.new(TARGET_PATHNAME)
+    assert_equal expected, Format.new(ls_file_list).run
   end
 
   def test_ls_files_dot_match
@@ -32,8 +32,8 @@ class LsCommandTest < Minitest::Test
       Gemfile.lock      lib               vendor
       README.md         log               yarn.lock
     TEXT
-    files = LsFiles.new(TARGET_PATHNAME, dot_match: true)
-    assert_equal expected, Format.new(files).format_data
+    ls_file_list = LsFileList.new(TARGET_PATHNAME, dot_match: true)
+    assert_equal expected, Format.new(ls_file_list).run
   end
 
   def test_ls_files_reverse
@@ -46,19 +46,19 @@ class LsCommandTest < Minitest::Test
       public            config.ru         Gemfile.lock
       postcss.config.js config            Gemfile
     TEXT
-    files = LsFiles.new(TARGET_PATHNAME, reverse: true)
-    assert_equal expected, Format.new(files).format_data
+    ls_file_list = LsFileList.new(TARGET_PATHNAME, reverse: true)
+    assert_equal expected, Format.new(ls_file_list).run
   end
 
   def test_ls_files_long_format
     expected = `ls -l #{TARGET_PATHNAME}`.chomp
-    files = LsFiles.new(TARGET_PATHNAME, long_format: true)
-    assert_equal expected, Format.new(files).format_data
+    ls_file_list = LsFileList.new(TARGET_PATHNAME, long_format: true)
+    assert_equal expected, Format.new(ls_file_list).run
   end
 
   def test_ls_files_all_options
     expected = `ls -lra #{TARGET_PATHNAME}`.chomp
-    files = LsFiles.new(TARGET_PATHNAME, long_format: true, reverse: true, dot_match: true)
-    assert_equal expected, Format.new(files).format_data
+    ls_file_list = LsFileList.new(TARGET_PATHNAME, long_format: true, reverse: true, dot_match: true)
+    assert_equal expected, Format.new(ls_file_list).run
   end
 end
