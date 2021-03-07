@@ -17,7 +17,7 @@ class LsCommandTest < Minitest::Test
       bin               package.json      yarn.lock
     TEXT
     ls_file_list = LsFileList.new(TARGET_PATHNAME)
-    assert_equal expected, Format.new(ls_file_list).run
+    assert_equal expected, LsFormat.new(ls_file_list).run
   end
 
   def test_ls_files_dot_match
@@ -33,7 +33,7 @@ class LsCommandTest < Minitest::Test
       README.md         log               yarn.lock
     TEXT
     ls_file_list = LsFileList.new(TARGET_PATHNAME, dot_match: true)
-    assert_equal expected, Format.new(ls_file_list).run
+    assert_equal expected, LsFormat.new(ls_file_list).run
   end
 
   def test_ls_files_reverse
@@ -47,18 +47,18 @@ class LsCommandTest < Minitest::Test
       postcss.config.js config            Gemfile
     TEXT
     ls_file_list = LsFileList.new(TARGET_PATHNAME, reverse: true)
-    assert_equal expected, Format.new(ls_file_list).run
+    assert_equal expected, LsFormat.new(ls_file_list).run
   end
 
   def test_ls_files_long_format
     expected = `ls -l #{TARGET_PATHNAME}`.chomp
-    ls_file_list = LsFileList.new(TARGET_PATHNAME, long_format: true)
-    assert_equal expected, Format.new(ls_file_list).run
+    ls_file_list = LsFileList.new(TARGET_PATHNAME)
+    assert_equal expected, LsFormat.new(ls_file_list, long_format: true).run
   end
 
   def test_ls_files_all_options
     expected = `ls -lra #{TARGET_PATHNAME}`.chomp
-    ls_file_list = LsFileList.new(TARGET_PATHNAME, long_format: true, reverse: true, dot_match: true)
-    assert_equal expected, Format.new(ls_file_list).run
+    ls_file_list = LsFileList.new(TARGET_PATHNAME, reverse: true, dot_match: true)
+    assert_equal expected, LsFormat.new(ls_file_list, long_format: true).run
   end
 end
