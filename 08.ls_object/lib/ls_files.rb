@@ -6,16 +6,15 @@ require_relative 'ls_file'
 class LsFileList
   attr_reader :long_format, :ls_files
 
-  def initialize(pathname, long_format: false, reverse: false, dot_match: false)
+  def initialize(pathname, reverse: false, dot_match: false)
     @pathname = pathname
-    @long_format = long_format
     @reverse = reverse
     @dot_match = dot_match
-    @ls_files = files
+    @ls_files = initialized_files
   end
 
   def file_names
-    ls_files.map(&:name)
+    @ls_files.map(&:name)
   end
 
   def max_filename_count
@@ -23,12 +22,12 @@ class LsFileList
   end
 
   def total_fileblocks
-    ls_files.sum(&:fileblocks)
+    @ls_files.sum(&:fileblocks)
   end
 
   private
 
-  def files
+  def initialized_files
     file_paths = collect_file_paths
     file_paths.map { |file_path| LsFile.new(file_path) }
   end

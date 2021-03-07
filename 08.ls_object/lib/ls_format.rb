@@ -2,10 +2,10 @@
 
 require_relative 'ls_files'
 
-class Format
-  def initialize(file_list)
+class LsFormat
+  def initialize(file_list, long_format: false)
     @file_list = file_list
-    @long_format = @file_list.long_format
+    @long_format = long_format
   end
 
   def run
