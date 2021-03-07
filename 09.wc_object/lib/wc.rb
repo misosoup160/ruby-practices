@@ -16,7 +16,7 @@ class Wc
   def run
     if @file_names.empty?
       @text = WcText.new(@input_text)
-      text_info_row(*set_info(@text))
+      text_info_row(*text_contents(@text))
     else
       @wcfiles = WcFiles.new(@file_names)
       lines = @wcfiles.files.map do |file|
