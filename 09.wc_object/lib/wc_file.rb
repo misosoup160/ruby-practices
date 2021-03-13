@@ -6,7 +6,7 @@ require_relative 'wc_text'
 
 class WcFile
   extend Forwardable
-  delegate [:lines, :words, :bytes] => :@text
+  delegate %i[lines words bytes] => :@text
 
   attr_reader :name
 
