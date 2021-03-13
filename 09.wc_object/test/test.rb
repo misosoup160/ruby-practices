@@ -16,8 +16,7 @@ class WcTest < Minitest::Test
     expected = <<-TEXT.chomp
        5      38     224
     TEXT
-    options = { bites: false, lines: false, words: false }
-    actual = Wc.new(options, input_text: text).run
+    actual = Wc.new(input_text: text).run
     assert_equal expected, actual
   end
 
@@ -33,8 +32,7 @@ class WcTest < Minitest::Test
     expected = <<-TEXT.chomp
      224
     TEXT
-    options = { bites: true, lines: false, words: false }
-    actual = Wc.new(options, input_text: text).run
+    actual = Wc.new(input_text: text, byte_counts: true).run
     assert_equal expected, actual
   end
 
@@ -50,8 +48,7 @@ class WcTest < Minitest::Test
     expected = <<-TEXT.chomp
        5
     TEXT
-    options = { bites: false, lines: true, words: false }
-    actual = Wc.new(options, input_text: text).run
+    actual = Wc.new(input_text: text, line_counts: true).run
     assert_equal expected, actual
   end
 
@@ -67,28 +64,25 @@ class WcTest < Minitest::Test
     expected = <<-TEXT.chomp
       38
     TEXT
-    options = { bites: false, lines: false, words: true }
-    actual = Wc.new(options, input_text: text).run
+    actual = Wc.new(input_text: text, word_counts: true).run
     assert_equal expected, actual
   end
 
   def test_one_file_without_options
     expected = <<-TEXT.chomp
-      76     142    1434 ./lib/wc.rb
+      68     132    1407 ./lib/wc.rb
     TEXT
-    options = { bites: false, lines: false, words: false }
-    actual = Wc.new(options, file_names: ['./lib/wc.rb']).run
+    actual = Wc.new(file_names: ['./lib/wc.rb']).run
     assert_equal expected, actual
   end
 
   def test_two_files_without_options
     expected = <<-TEXT.chomp
-      76     142    1434 ./lib/wc.rb
-      17      62     469 ./lib/run_wc.rb
-      93     204    1903 total
+      68     132    1407 ./lib/wc.rb
+      17      62     507 ./lib/run_wc.rb
+      85     194    1914 total
     TEXT
-    options = { bites: false, lines: false, words: false }
-    actual = Wc.new(options, file_names: ['./lib/wc.rb', './lib/run_wc.rb']).run
+    actual = Wc.new(file_names: ['./lib/wc.rb', './lib/run_wc.rb']).run
     assert_equal expected, actual
   end
 end
