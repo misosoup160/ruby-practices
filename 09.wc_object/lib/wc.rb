@@ -19,7 +19,7 @@ class Wc
     else
       @wc_files = WcFiles.new(@file_names)
       lines = @wc_files.map do |file|
-        "#{text_info_row(*text_contents(file.text))} #{file.name}"
+        "#{text_info_row(*text_contents(file))} #{file.name}"
       end
       lines << "#{text_info_row(*sum_contents)} total" if @file_names.count > 1
       lines.join("\n")

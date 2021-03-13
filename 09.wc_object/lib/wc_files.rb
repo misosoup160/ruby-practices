@@ -16,14 +16,14 @@ class WcFiles
   end
 
   def total_lines
-    sum { |file| file.text.lines }
+    sum(&:lines)
   end
 
   def total_words
-    sum { |file| file.text.words }
+    sum(&:words)
   end
 
   def total_bytes
-    sum { |file| file.text.bytes }
+    sum(&:bytes)
   end
 end
