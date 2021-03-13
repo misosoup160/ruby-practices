@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'pathname'
-require_relative 'wc_text'
+require_relative 'wc_file'
 
 class WcFiles
   attr_reader :files
@@ -21,14 +21,5 @@ class WcFiles
 
   def total_bites
     @files.sum { |file| file.text.bites }
-  end
-end
-
-class WcFile
-  attr_reader :name, :text
-
-  def initialize(file_name)
-    @name = file_name
-    @text = WcText.new(Pathname(@name).read)
   end
 end
