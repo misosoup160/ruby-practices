@@ -13,7 +13,7 @@ class WcText
     @text.split(/\s+/).size
   end
 
-  def bites
+  def bytes
     @text.bytesize
   end
 end

@@ -6,12 +6,12 @@ require 'pathname'
 require_relative 'wc'
 
 opt = OptionParser.new
-options = { bites: false, lines: false, words: false }
-opt.on('-c') { |v| options[:bites] = v }
-opt.on('-l') { |v| options[:lines] = v }
-opt.on('-w') { |v| options[:words] = v }
+options = { byte_counts: false, line_counts: false, word_counts: false }
+opt.on('-c') { |v| options[:byte_counts] = v }
+opt.on('-l') { |v| options[:line_counts] = v }
+opt.on('-w') { |v| options[:word_counts] = v }
 opt.parse!(ARGV)
 file_names = ARGV
 input_text = ARGV.empty? ? readlines.join : ''
 
-puts Wc.new(options, input_text: input_text, file_names: file_names).run
+puts Wc.new(input_text: input_text, file_names: file_names, **options).run

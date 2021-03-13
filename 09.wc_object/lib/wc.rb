@@ -4,13 +4,12 @@ require 'pathname'
 require_relative 'wc_files'
 
 class Wc
-  def initialize(options, input_text: '', file_names: [])
+  def initialize(input_text: '', file_names: [], byte_counts: false, line_counts: false, word_counts: false)
     @input_text = input_text
     @file_names = file_names
-    @options = options
-    @bites = options[:bites] || false
-    @lines = options[:lines] || false
-    @words = options[:words] || false
+    @byte_counts = byte_counts
+    @line_counts = line_counts
+    @word_counts = word_counts
   end
 
   def run
@@ -18,8 +17,8 @@ class Wc
       @text = WcText.new(@input_text)
       text_info_row(*text_contents(@text))
     else
-      @wcfiles = WcFiles.new(@file_names)
-      lines = @wcfiles.files.map do |file|
+      @wc_files = WcFiles.new(@file_names)
+      lines = @wc_files.files.map do |file|
         "#{text_info_row(*text_contents(file.text))} #{file.name}"
       end
       lines << "#{text_info_row(*sum_contents)} total" if @file_names.count > 1
@@ -31,9 +30,9 @@ class Wc
 
   def sum_contents
     [
-      @wcfiles.total_lines,
-      @wcfiles.total_words,
-      @wcfiles.total_bites
+      @wc_files.total_lines,
+      @wc_files.total_words,
+      @wc_files.total_bytes
     ]
   end
 
@@ -41,36 +40,29 @@ class Wc
     [
       text.lines,
       text.words,
-      text.bites
+      text.bytes
     ]
   end
 
-  def text_info_row(lines, words, bites)
-    if no_options?
-      text_info = [lines, words, bites]
-    else
-      text_info = []
-      text_info << lines if lines?
-      text_info << words if words?
-      text_info << bites if bites?
-    end
+  def text_info_row(lines, words, bytes)
+    text_info = []
+    text_info << lines if line_counts?
+    text_info << words if word_counts?
+    text_info << bytes if byte_counts?
+    text_info = [lines, words, bytes] if text_info.empty?
 
     text_info.map { |v| v.to_s.rjust(8) }.join
   end
 
-  def lines?
-    @lines
+  def line_counts?
+    @line_counts
   end
 
-  def words?
-    @words
+  def word_counts?
+    @word_counts
   end
 
-  def bites?
-    @bites
-  end
-
-  def no_options?
-    @options.values.each.none?
+  def byte_counts?
+    @byte_counts
   end
 end
